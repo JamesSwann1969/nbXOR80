@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<TITLE>nbXOR80</TITLE>
+<meta name="description" content="nbXOR80">
+<meta name="keywords" content="nbXOR80">
+
+<!-- AUTHOR: James Swann (instructables.com/member/jds1969/) -->
+<!--                                                         -->
+<!-- DISTRIBUTE FREELY AND MODIFY AS YOU WISH.               -->
+<!-- If you happen to use my ideas or my work I only ask to  -->
+<!-- be credited for my contribution rather than plagiarized.-->
+
+<script language = JavaScript>
+var a=80,b=79,c=95,d=94,e,f,g,h,i,j,k,l,m=[],n=[],o=[],p=[],q=[],r=[],s=[],t=[],u=[],v=[],y=[],z=[];
+var w="`~1!2@3#4$5%6^7&8*9(0)-_=+qQwWeErRtTyYuUiIoOpP[{]}\\|aAsSdDfFgGhHjJkKlL;:\"\'zZxXcCvVbBnNmM,<.>/? ";
+var msg="ERROR - message is or will be unreadble - bad character - line ";
+for(i=0;i<c;i++){m[i]=w.substr(i,1);}
+function M(){for(g=0;g<a;g++){for(i=0;i<a;i++){h=i+1;if(h>=a){h=0;} n[h]=d-n[i]-n[h];for(j=0;n[h]<0;n[h]+=c){j=0;}}}}
+function S(){for(g=0;g<a;g++){for(i=0;i<a;i++){h=i+1;if(h>=a){h=0;} o[i]=d-o[i]-o[h];for(j=0;o[i]<0;o[i]+=c){j=0;}}}}
+function R(){for(g=0;g<a;g++){for(i=b;i>=0;i--){h=i+1;if(h>=a){h=0;} p[i]=d-p[i]-p[h];for(j=0;p[i]<0;p[i]+=c){j=0;}}}}
+function X(){for(g=0;g<a;g++){for(i=b;i>=0;i--){h=i+1;if(h>=a){h=0;} q[h]=d-q[i]-q[h];for(j=0;q[h]<0;q[h]+=c){j=0;}}}}
+function H(){M();S();R();X();}
+function K(){k=document.getElementById("I1").value;l=k.substr(0,a);for(i=0;i<a;i++){n[i]=d;}
+for(i=0,f=l.length;i<f;i++){n[i]=m.indexOf(l.substr(i,1));}for(i=0;i<a;i++){o[i]=n[i];;p[i]=n[i];;q[i]=n[i];;r[i]=n[i];}
+H();for(i=0;i<a;i++){r[i]=d-r[i]-n[i];for(j=0;r[i]<0;r[i]+=c){j=0;}r[i]=d-r[i]-o[i];for(j=0;r[i]<0;r[i]+=c){j=0;}
+r[i]=d-r[i]-p[i];for(j=0;r[i]<0;r[i]+=c){j=0;}r[i]=d-r[i]-q[i];for(j=0;r[i]<0;r[i]+=c){j=0;}}
+for(i=0;i<a;i++){o[i]=r[i];;p[i]=r[i];;q[i]=r[i];;n[i]=r[i];}H();for(i=0;i<a;i++){s[i]=r[i];}
+for(i=0;i<a;i++){r[i]=d-r[i]-n[i];for(j=0;r[i]<0;r[i]+=c){j=0;}r[i]=d-r[i]-o[i];for(j=0;r[i]<0;r[i]+=c){j=0;}}
+for(i=0;i<a;i++){t[i]=r[i];}
+for(i=0;i<a;i++){r[i]=d-r[i]-p[i];for(j=0;r[i]<0;r[i]+=c){j=0;}r[i]=d-r[i]-q[i];for(j=0;r[i]<0;r[i]+=c){j=0;}}
+for(i=0;i<a;i++){u[i]=r[i];}}
+function C(){for(i=0;i<a;i++){n[i]=d-y[i]-u[i];for(j=0;n[i]<0;n[i]+=c){j=0;}}M();
+for(i=0;i<a;i++){o[i]=d-n[i]-s[i];for(j=0;o[i]<0;o[i]+=c){j=0;}}S();
+for(i=0;i<a;i++){v[i]=d-o[i]-t[i];for(j=0;v[i]<0;v[i]+=c){j=0;}}}
+function D(){for(i=0;i<a;i++){p[i]=d-y[i]-t[i];for(j=0;p[i]<0;p[i]+=c){j=0;}}R();
+for(i=0;i<a;i++){q[i]=d-p[i]-s[i];for(j=0;q[i]<0;q[i]+=c){j=0;}}X();
+for(i=0;i<a;i++){q[i]=d-q[i]-u[i];for(j=0;q[i]<0;q[i]+=c){j=0;}}}
+function EC(){document.getElementById("O1").innerHTML = "";K();k=document.getElementById("I2").value;
+k=k.replace(/(\r\n|\n|\r)/gm," ");k=k.replace(/\s+/g," ");
+for(i=1;i<4;i++){j=Math.round(Math.random()*94);;k=m[j]+k;}for(i=0;i<Math.ceil(k.length/a);i++){z[i]=k.substr(i*a,a);}
+for(f=0,k="";f<z.length;f++){for(i=0;i<a;i++){y[i]=d;}k=z[f];for(i=0;i<k.length;i++){y[i]=m.indexOf(k.substr(i,1));;
+if(!(y[i]>=0&&y[i]<=94)){document.getElementById("O1").innerHTML=msg+f+","+i;}}
+C();for(i=0,e="";i<a;i++){e+=m[v[i]];}z[f]=e;for(i=0;i<a;i++){u[i]=d-y[i]-v[i];for(j=0;u[i]<0;u[i]+=c){j=0;}}}
+for(i=0,k="";i<z.length;i++){k+=z[i].substr(0,a);}document.getElementById("O2").innerHTML = k;}
+function DC(){document.getElementById("O1").innerHTML = "";K();k=document.getElementById("I2").value;
+k=k.replace(/(\r\n|\n|\r)/gm,"");for(i=0;i<Math.ceil(k.length/a);i++){z[i]=k.substr(i*a,a);}
+for(f=0;f<z.length;f++){k=z[f];for(i=0;i<a;i++){y[i]=m.indexOf(k.substr(i,1));;
+if(!(y[i]>=0&&y[i]<=94)){document.getElementById("O1").innerHTML=msg+f+","+i;}}
+D();for(i=0,e="";i<a;i++){e+=m[q[i]];}z[f]=e;for(i=0;i<a;i++){u[i]=d-y[i]-q[i];for(j=0;u[i]<0;u[i]+=c){j=0;}}}
+for(i=0,k="",z[0]=z[0].substr(3,77);i<z.length;i++){k+=z[i].substr(0,a);}document.getElementById("O2").innerHTML = k;}
+</script><body><h2>nbXOR<sup>80</sup></h2><h3>Passphrase</h3><textarea rows="1" cols="85" id="I1"></textarea><br>
+<h3>Message</h3><textarea rows="10" cols="85" id="I2"></textarea><br>
+ <button type="button" onclick="EC()">Encode?</button> ____OR____ <button type="button" onclick="DC()">Decode?</button>
+<p id="O1"></p><h3>Result</h3><textarea rows="10" cols="85" id="O2"></textarea><br></body></html>
