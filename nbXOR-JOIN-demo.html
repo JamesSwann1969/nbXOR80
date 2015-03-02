@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<TITLE>nbXOR encryption demonstration part 1</TITLE>
+<meta name="description" content="nbXOR encryption demonstration part 1">
+<meta name="keywords" content="nbXOR encryption demonstration part 1">
+<!-- AUTHOR: James Swann (instructables.com/member/jds1969/) -->
+<!--                                                         -->
+<!-- DISTRIBUTE FREELY AND MODIFY AS YOU WISH.               -->
+<!-- If you happen to use my ideas or my work I only ask to  -->
+<!-- be credited for my contribution rather than plagiarized.-->
+
+<script language = JavaScript>
+/* Declare variables, arrays and character set */
+var Xresult, i, x, L; 
+var regSET = new Array (95), regONE = new Array (80), regTWO = new Array (80);
+var SET = "`~1!2@3#4$5%6^7&8*9(0)-_=+qQwWeErRtTyYuUiIoOpP[{]}\\|aAsSdDfFgGhHjJkKlL;:\"\'zZxXcCvVbBnNmM,<.>/? ";
+	
+/* Load character set, one character at a time, into regSET array */ 
+for (i = 0; i < 95; i++){regSET[i] = SET.substr(i, 1);}
+
+function setup() {
+document.outboxes.out1.value="";
+}
+	
+function JOIN() {
+    /* Gather data from the plaintext entry box, truncate at 80 cols */
+	var inputText = document.getElementById("input1").value;
+	var plaintext = inputText.substr(0, 80);
+	
+	/* Gather data from the one-time-key entry box, truncate at 80 cols */
+	var inputKey = document.getElementById("input2").value;
+	var onetimeKey = inputKey.substr(0, 80);
+		
+	/* Pad the plaintext and one-time-key arrays using spaces (index 94) */
+	for (i = 0; i < 80; i++) {regONE[i] = "94";;regTWO[i] = "94";}
+	
+	/* Load the index values into plaintext array from the input */
+	for (i = 0, L = plaintext.length; i < L; i++) {
+		regONE[i] = regSET.indexOf(plaintext.substr(i, 1));
+	}	
+	
+	/* Load the index values into one-time-key array from the input */
+	for (i = 0, L = onetimeKey.length; i < L; i++) {
+		regTWO[i] = regSET.indexOf(onetimeKey.substr(i, 1));
+	}
+	
+	/* Perform the nbXOR function and write into regTWO array -
+	   Each element of the array is nbXORed with the corresponding 
+	   element from the other array and the result is written into
+	   the first array. Making the index value positive is part of
+       the mod math process.                                  	   */
+	for (i = 0; i < 80; i++){
+		regTWO[i] = 94 - regTWO[i] - regONE[i];
+		for (x = 0; regTWO[i] < 0; regTWO[i] += 95){x = 0;}
+	}
+	
+	/* Convert array from index values to an 80-digit string */
+	for (i = 0, Xresult = ""; i < 80; i++) {Xresult += regSET[regTWO[i]];}
+	
+	/* Display the output to the user */
+	document.outboxes.out1.value = Xresult;
+}
+</script>
+<body onLoad=setup();>
+<CENTER>
+<h2>A demonstration of how the elements behave with user input</h2>
+
+<h3>nbXOR Join</h3>
+
+Plaintext (truncated at 80 characters):<br>
+<textarea rows="1" cols="85" id="input1">This is a test, this is only a test.</textarea>
+<br><br>
+One-time Key (truncated at 80 characters):<br>
+<textarea rows="1" cols="85" id="input2">Just fill this with random garbage or a long sentence.</textarea>
+<br>
+<p>For Demonstration Purposes Only - This is not a good encryption method</p>
+
+<button type="button" onclick="JOIN()">Execute JOIN</button>
+<br> <br> 
+<FORM name="outboxes">
+<input TYPE="text" NAME="out1" SIZE=85><BR>
+</FORM>
+<br><br>
+Click the button and then copy the bottom box into one of the top ones and click again.
+<br>Reload the page if you want to restore the inputs to the default values
+</CENTER>
+</body>
+</html>
