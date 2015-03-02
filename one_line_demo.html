@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+<TITLE>nbXOR encryption demonstration part 5</TITLE>
+<meta name="description" content="nbXOR encryption demonstration part 5">
+<meta name="keywords" content="nbXOR encryption demonstration part 5">
+<!-- AUTHOR: James Swann (instructables.com/member/jds1969/) -->
+<!--                                                         -->
+<!-- DISTRIBUTE FREELY AND MODIFY AS YOU WISH.               -->
+<!-- If you happen to use my ideas or my work I only ask to  -->
+<!-- be credited for my contribution rather than plagiarized.-->
+
+<script language = JavaScript>
+/* Declare variables, arrays and character set */
+var X, i, j, n, x, L, CT = 0; 
+var rS = new Array (95), r1 = new Array (80), r2 = new Array (80);
+var r3 = new Array (80), r4 = new Array (80), rH = new Array (80);
+var K1 = new Array (80), K2 = new Array (80), K3 = new Array (80), OP = new Array (80);
+var S = "`~1!2@3#4$5%6^7&8*9(0)-_=+qQwWeErRtTyYuUiIoOpP[{]}\\|aAsSdDfFgGhHjJkKlL;:\"\'zZxXcCvVbBnNmM,<.>/? ";
+	
+/* Load character set, one character at a time, into rS array */ 
+for (i = 0; i < 95; i++){rS[i] = S.substr(i, 1);}
+
+function setup() {
+	document.outboxes.out1.value=""; document.outboxes.out2.value=""; 
+}
+	
+function Mix() {
+	for (j = 0; j < 80; j++){
+		for (i = 0; i < 80; i++){
+		    n = i + 1; if (n >= 80){n = 0;}
+			r1[n] = 94 - r1[i] - r1[n]; for (x = 0; r1[n] < 0; r1[n] += 95){x = 0;}
+		}
+	}
+}
+
+function Stir() {	
+	for (j = 0; j < 80; j++){
+		for (i = 0; i < 80; i++){
+		    n = i + 1; if (n >= 80){n = 0;}
+			r2[i] = 94 - r2[i] - r2[n]; for (x = 0; r2[i] < 0; r2[i] += 95){x = 0;}
+		}
+	}
+}
+
+function Unstir() {	
+	for (j = 0; j < 80; j++){
+		for (i = 79; i >= 0; i--){
+		    n = i + 1; if (n >= 80){n = 0;}
+			r3[i] = 94 - r3[i] - r3[n]; for (x = 0; r3[i] < 0; r3[i] += 95){x = 0;}
+		}
+	}
+}
+
+function Unmix() {
+	for (j = 0; j < 80; j++){
+		for (i = 79; i >= 0; i--){
+		    n = i + 1; if (n >= 80){n = 0;}
+			r4[n] = 94 - r4[i] - r4[n]; for (x = 0; r4[n] < 0; r4[n] += 95){x = 0;}
+		}
+	}
+}
+
+function Hash() {
+	Mix(); Stir(); Unstir(); Unmix();
+}
+
+function KeyHash() {
+    /* Gather data from the passphrase entry box, truncate at 80 cols */
+	var inT = document.getElementById("input1").value; var pt = inT.substr(0, 80);
+	/* Pad the passphrase array using spaces (index 94) */
+	for (i = 0; i < 80; i++) {r1[i] = "94";}
+	/* Load the index values into array r1 */
+	for (i = 0, L = pt.length; i < L; i++) {r1[i] = rS.indexOf(pt.substr(i, 1));}	
+	/* Copy the r1 array into the remaining arrays */
+	for (i = 0; i < 80; i++){r2[i] = r1[i];; r3[i] = r1[i];; r4[i] = r1[i];; rH[i] = r1[i];}
+	/* Call the HASH routine to create permutations */
+	Hash();
+	/* nbXOR JOIN all four permutations against the input */ 
+	for (i = 0; i < 80; i++){
+		rH[i] = 94 - rH[i] - r1[i];	for (x = 0; rH[i] < 0; rH[i] += 95){x = 0;}
+		rH[i] = 94 - rH[i] - r2[i];	for (x = 0; rH[i] < 0; rH[i] += 95){x = 0;}
+		rH[i] = 94 - rH[i] - r3[i];	for (x = 0; rH[i] < 0; rH[i] += 95){x = 0;}
+		rH[i] = 94 - rH[i] - r4[i];	for (x = 0; rH[i] < 0; rH[i] += 95){x = 0;}
+	}
+	/* Copy the result array into the other arrays */
+	for (i = 0; i < 80; i++){r2[i] = rH[i];; r3[i] = rH[i];; r4[i] = rH[i];; r1[i] = rH[i];}
+	/* Call the HASH routine to create additional permutations */
+	Hash();
+	/* Convert result from index values to an 80-digit string (K1) */
+	for (i = 0; i < 80; i++){K1[i] =rH[i];}
+	/* nbXOR JOIN the first two permutations against the input */ 
+	for (i = 0; i < 80; i++){
+		rH[i] = 94 - rH[i] - r1[i]; for (x = 0; rH[i] < 0; rH[i] += 95){x = 0;}
+		rH[i] = 94 - rH[i] - r2[i]; for (x = 0; rH[i] < 0; rH[i] += 95){x = 0;}
+	}
+	/* Convert result from index values to an 80-digit string (K2) */
+	for (i = 0; i < 80; i++){K2[i] = rH[i];}
+	/* nbXOR JOIN last two permutations against the input */ 
+	for (i = 0; i < 80; i++){
+		rH[i] = 94 - rH[i] - r3[i]; for (x = 0; rH[i] < 0; rH[i] += 95){x = 0;}
+		rH[i] = 94 - rH[i] - r4[i]; for (x = 0; rH[i] < 0; rH[i] += 95){x = 0;}
+	}
+	/* Convert result from index values to an 80-digit string (K3) */
+	for (i = 0; i < 80; i++){K3[i] = rH[i];}
+}
+
+function Cipher() {
+    CT++;
+	/* Call the KeyHash function to create the Keys */
+	KeyHash();
+	/* Grab the plaintext message and begin */
+	var inT = document.getElementById("input2").value; var pt = inT.substr(0, 80);
+	/* Pad the array using spaces (index 94) */
+	for (i = 0; i < 80; i++) {r1[i] = "94";}
+	/* Load the index values into array r1 */
+	for (i = 0, L = pt.length; i < L; i++) {r1[i] = rS.indexOf(pt.substr(i, 1));}	
+	/* Join the message with K3 */
+	for (i = 0; i < 80; i++){
+		r1[i] = 94 - r1[i] - K3[i]; for (x = 0; r1[i] < 0; r1[i] += 95){x = 0;}
+	}
+	/* Call the mix function */
+	Mix();
+	/* Join the result with K1 and move to r2 */
+	for (i = 0; i < 80; i++){
+		r2[i] = 94 - r1[i] - K1[i]; for (x = 0; r2[i] < 0; r2[i] += 95){x = 0;}
+	}
+	/* Call the stir function */
+	Stir();
+	/* Join the result with K2 and move to output array */
+	for (i = 0; i < 80; i++){
+		OP[i] = 94 - r2[i] - K2[i]; for (x = 0; OP[i] < 0; OP[i] += 95){x = 0;}
+	}
+	for (i = 0, X = ""; i < 80; i++) {X += rS[OP[i]];}
+	document.outboxes.out1.value = X;
+}
+
+function Decipher() {
+	if (CT == 0){document.outboxes.out2.value = "no ciphertext yet";;return 0;}
+	document.outboxes.out2.value = "";
+	KeyHash();
+	/* Join OP with K2 and load into r3 */
+	for (i = 0; i < 80; i++){
+		r3[i] = 94 - OP[i] - K2[i]; for (x = 0; r3[i] < 0; r3[i] += 95){x = 0;}
+	}
+	/* Call unstir */
+	Unstir();
+	/* Join result with K1 and load into r4 */
+	for (i = 0; i < 80; i++){
+		r4[i] = 94 - r3[i] - K1[i]; for (x = 0; r4[i] < 0; r4[i] += 95){x = 0;}
+	}
+	/* Call unmix */
+	Unmix();
+	/* Join result with K3 and output */
+	for (i = 0; i < 80; i++){
+		r4[i] = 94 - r4[i] - K3[i]; for (x = 0; r4[i] < 0; r4[i] += 95){x = 0;}
+	}
+	for (i = 0, X = ""; i < 80; i++) {X += rS[r4[i]];}
+	document.outboxes.out2.value = X;
+}
+</script>
+<body onLoad=setup();>
+<CENTER>
+<h2>A demonstration of how the elements behave with user input</h2>
+
+<h3>BLOCK CIPHER</h3>
+
+Passphrase (truncated at 80 characters):<br>
+<textarea rows="1" cols="85" id="input1">This_is_my_super_secret_password_that_should_be_as_long_as_possible.</textarea>
+<br><br>
+Plaintext (truncated at 80 characters):<br>
+<textarea rows="1" cols="85" id="input2">This is a test, this is only a test. A test secret message, that is.</textarea>
+<br>
+<p>For Demonstration Purposes Only - this is a test of one-line message encryption</p>
+
+<button type="button" onclick="Cipher()">Execute Cipher</button>
+<button type="button" onclick="Decipher()">Execute Decipher</button>
+<br> <br> 
+<FORM name="outboxes">
+Ciphertext<br>
+<input TYPE="text" NAME="out1" SIZE=85><BR>
+<br><br>
+Deciphertext<br>
+<input TYPE="text" NAME="out2" SIZE=85><BR>
+</FORM>
+<br><br>
+Try your own message and passphrase
+<br>Reload the page if you want to restore the inputs to the default values
+</CENTER>
+</body>
+</html>
