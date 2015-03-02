@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<TITLE>nbXOR encryption demonstration part 4</TITLE>
+<meta name="description" content="nbXOR encryption demonstration part 4">
+<meta name="keywords" content="nbXOR encryption demonstration part 4">
+<!-- AUTHOR: James Swann (instructables.com/member/jds1969/) -->
+<!--                                                         -->
+<!-- DISTRIBUTE FREELY AND MODIFY AS YOU WISH.               -->
+<!-- If you happen to use my ideas or my work I only ask to  -->
+<!-- be credited for my contribution rather than plagiarized.-->
+
+<script language = JavaScript>
+/* Declare variables, arrays and character set */
+var Xresult, i, j, n, x, L, KONE, KTWO, KTHR; 
+var regSET = new Array (95), regONE = new Array (80), regTWO = new Array (80);
+var regTHR = new Array (80), regFOU = new Array (80), regHASH = new Array (80);
+var SET = "`~1!2@3#4$5%6^7&8*9(0)-_=+qQwWeErRtTyYuUiIoOpP[{]}\\|aAsSdDfFgGhHjJkKlL;:\"\'zZxXcCvVbBnNmM,<.>/? ";
+	
+/* Load character set, one character at a time, into regSET array */ 
+for (i = 0; i < 95; i++){regSET[i] = SET.substr(i, 1);}
+
+function setup() {
+	document.outboxes.out1.value="";
+	document.outboxes.out2.value="";
+	document.outboxes.out3.value="";
+}
+	
+function HASH() {
+	/* MIX regONE */
+	for (j = 0; j < 80; j++){
+		for (i = 0; i < 80; i++){
+		    n = i + 1;
+			if (n >= 80){n = 0;}
+			regONE[n] = 94 - regONE[i] - regONE[n];
+			for (x = 0; regONE[n] < 0; regONE[n] += 95){x = 0;}
+		}
+	}
+	
+	/* STIR regTWO */
+	for (j = 0; j < 80; j++){
+		for (i = 0; i < 80; i++){
+		    n = i + 1;
+			if (n >= 80){n = 0;}
+			regTWO[i] = 94 - regTWO[i] - regTWO[n];
+			for (x = 0; regTWO[i] < 0; regTWO[i] += 95){x = 0;}
+		}
+	}
+	
+	/* UNSTIR regTHR */
+	for (j = 0; j < 80; j++){
+		for (i = 79; i >= 0; i--){
+		    n = i + 1;
+			if (n >= 80){n = 0;}
+			regTHR[i] = 94 - regTHR[i] - regTHR[n];
+			for (x = 0; regTHR[i] < 0; regTHR[i] += 95){x = 0;}
+		}
+	}
+	
+	/* UNMIX regFOU */
+	for (j = 0; j < 80; j++){
+		for (i = 79; i >= 0; i--){
+		    n = i + 1;
+			if (n >= 80){n = 0;}
+			regFOU[n] = 94 - regFOU[i] - regFOU[n];
+			for (x = 0; regFOU[n] < 0; regFOU[n] += 95){x = 0;}
+		}
+	}
+}
+
+function KeyHash() {
+    /* Gather data from the plaintext entry box, truncate at 80 cols */
+	var inputText = document.getElementById("input1").value;
+	var plaintext = inputText.substr(0, 80);
+		
+	/* Pad the plaintext array using spaces (index 94) */
+	for (i = 0; i < 80; i++) {regONE[i] = "94";}
+	
+	/* Load the index values into plaintext array from the input */
+	for (i = 0, L = plaintext.length; i < L; i++) {
+		regONE[i] = regSET.indexOf(plaintext.substr(i, 1));
+	}	
+	
+	/* Copy the regONE array into the remaining arrays */
+	for (i = 0; i < 80; i++){
+		regTWO[i] = regONE[i];;
+		regTHR[i] = regONE[i];;
+		regFOU[i] = regONE[i];;
+		regHASH[i] = regONE[i];
+	}
+	
+	/* Call the HASH routine to create permutations */
+	HASH();
+	
+	/* nbXOR JOIN all four permutations against the input */ 
+	for (i = 0; i < 80; i++){
+		regHASH[i] = 94 - regHASH[i] - regONE[i];
+		for (x = 0; regHASH[i] < 0; regHASH[i] += 95){x = 0;}
+		regHASH[i] = 94 - regHASH[i] - regTWO[i];
+		for (x = 0; regHASH[i] < 0; regHASH[i] += 95){x = 0;}
+		regHASH[i] = 94 - regHASH[i] - regTHR[i];
+		for (x = 0; regHASH[i] < 0; regHASH[i] += 95){x = 0;}
+		regHASH[i] = 94 - regHASH[i] - regFOU[i];
+		for (x = 0; regHASH[i] < 0; regHASH[i] += 95){x = 0;}
+	}
+	
+	/* Copy the result array into the other arrays */
+	for (i = 0; i < 80; i++){
+		regTWO[i] = regHASH[i];;
+		regTHR[i] = regHASH[i];;
+		regFOU[i] = regHASH[i];;
+		regONE[i] = regHASH[i];
+	}
+	
+	/* Call the HASH routine to create permutations */
+	HASH();
+	
+	/* Convert result from index values to an 80-digit string (KONE) */
+	for (i = 0, KONE = ""; i < 80; i++) {KONE += regSET[regHASH[i]];}
+	document.outboxes.out1.value = KONE;
+	
+	/* nbXOR JOIN the first two permutations against the input */ 
+	for (i = 0; i < 80; i++){
+		regHASH[i] = 94 - regHASH[i] - regONE[i];
+		for (x = 0; regHASH[i] < 0; regHASH[i] += 95){x = 0;}
+		regHASH[i] = 94 - regHASH[i] - regTWO[i];
+		for (x = 0; regHASH[i] < 0; regHASH[i] += 95){x = 0;}
+	}
+	
+	/* Convert result from index values to an 80-digit string (KTWO) */
+	for (i = 0, KTWO = ""; i < 80; i++) {KTWO += regSET[regHASH[i]];}
+	document.outboxes.out2.value = KTWO;
+	
+	/* nbXOR JOIN last two permutations against the input */ 
+	for (i = 0; i < 80; i++){
+		regHASH[i] = 94 - regHASH[i] - regTHR[i];
+		for (x = 0; regHASH[i] < 0; regHASH[i] += 95){x = 0;}
+		regHASH[i] = 94 - regHASH[i] - regFOU[i];
+		for (x = 0; regHASH[i] < 0; regHASH[i] += 95){x = 0;}
+	}
+	
+	/* Convert result from index values to an 80-digit string (KTHR) */
+	for (i = 0, KTHR = ""; i < 80; i++) {KTHR += regSET[regHASH[i]];}
+	document.outboxes.out3.value = KTHR;
+}
+</script>
+<body onLoad=setup();>
+<CENTER>
+<h2>A demonstration of how the elements behave with user input</h2>
+
+<h3>KEY HASH</h3>
+
+Plaintext (truncated at 80 characters):<br>
+<textarea rows="1" cols="85" id="input1">This_is_my_super_secret_password_that_should_be_as_long_as_possible.</textarea>
+<br><br>
+<p>For Demonstration Purposes Only - USE THIS AS A PUBLIC HASH AT YOUR OWN RISK</p>
+
+<button type="button" onclick="KeyHash()">Execute HASH</button>
+<br> <br> 
+<FORM name="outboxes">
+Key(K1)<br>
+<input TYPE="text" NAME="out1" SIZE=85><BR>
+<br>Key(K2)<br>
+<input TYPE="text" NAME="out2" SIZE=85><BR>
+<br>Key(K3)<br>
+<input TYPE="text" NAME="out3" SIZE=85><BR>
+</FORM>
+<br><br>
+Try making minor changes to see the major changes in output
+<br>Reload the page if you want to restore the inputs to the default values
+</CENTER>
+</body>
+</html>
