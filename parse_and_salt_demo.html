@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<TITLE>nbXOR encryption demonstration part 6</TITLE>
+<meta name="description" content="nbXOR encryption demonstration part 6">
+<meta name="keywords" content="nbXOR encryption demonstration part 6">
+
+<!-- AUTHOR: James Swann (instructables.com/member/jds1969/) -->
+<!--                                                         -->
+<!-- DISTRIBUTE FREELY AND MODIFY AS YOU WISH.               -->
+<!-- If you happen to use my ideas or my work I only ask to  -->
+<!-- be credited for my contribution rather than plagiarized.-->
+
+<script language = JavaScript>
+var a=80,b=79,c=95,d=94,e,f,g,h,i,j,k,l,m=[],n=[],o=[],p=[],q=[],r=[],s=[],t=[],u=[],v=[],y=[],z=[];
+var w="`~1!2@3#4$5%6^7&8*9(0)-_=+qQwWeErRtTyYuUiIoOpP[{]}\\|aAsSdDfFgGhHjJkKlL;:\"\'zZxXcCvVbBnNmM,<.>/? ";
+for(i=0;i<c;i++){
+	m[i]=w.substr(i,1);
+}
+l="Notice how the formatting disappears but the message remains readable.<br>Three random characters (salt)";
+l+=" have been placed in front.<br>The last line will be padded to 80 characters.<br>";
+
+function EncryptIN(){
+	/* Parse and Salt */
+	k=document.getElementById("i2").value;
+	k=k.replace(/(\r\n|\n|\r)/gm," ");
+	k=k.replace(/\s+/g," ");
+	for(i=1,z[0]="";i<4;i++){
+		j=Math.round(Math.random()*94);;
+		z[0]+=m[j];
+	}
+	z[0]+=k.substr(0,77);
+	for(i=1,f=Math.ceil(k.length/a);i<=f;i++){
+		z[i]=k.substr(i*a-3,a);
+	}
+	z[z.length-1]+="                                                                                                   ";
+	z[z.length-1]=z[z.length-1].substr(0,a);
+	for(i=0,k="";i<z.length;i++){
+		k+=z[i]+"<br>";
+	}
+	document.getElementById("OUT1").innerHTML = l;
+	document.getElementById("OUT2").innerHTML = k;
+}
+
+function DecryptIN(){
+	/* Parse */
+	k=document.getElementById("i2").value;
+	k=k.replace(/(\r\n|\n|\r)/gm,"");
+	for(i=0,f=Math.ceil(k.length/a);i<=f;i++){
+		z[i]=k.substr(i*a,a);
+	}
+	for(i=0,k="";i<z.length;i++){
+		k+=z[i]+"<br>";
+	}
+	document.getElementById("OUT1").innerHTML = "";
+	document.getElementById("OUT2").innerHTML = k;
+}
+
+</script>
+<body>
+
+<h2>A demonstration of how the elements behave with user input</h2>
+
+<h3>INPUT PARSING AND SALTING</h3>
+<h3>Message Area</h3>(See how the poem is formatted and then hit parse for encrypt to see result)<br><br>
+<textarea rows="10" cols="85" id="i2">(Poem #1204) To Thine Own Self Be True
+
+ Yet here, Laertes! Aboard, aboard for shame!
+ The wind sits in the shoulder of your sail,
+ And you are stay'd for.
+ There ... my blessing with thee!
+ And these few precepts in thy memory
+ Look thou character. Give thy thoughts no tongue,
+ Nor any unproportion'd thought his act.
+ Be thou familiar, but by no means vulgar.
+ Those friends thou hast, and their adoption tried,
+ Grapple them to thy soul with hoops of steel;
+ But do not dull thy palm with entertainment
+ Of each new-hatch'd, unfledg'd comrade.  Beware
+ Of entrance to a quarrel but, being in,
+ Bear't that th' opposed may beware of thee.
+ Give every man thy ear, but few thy voice;
+ Take each man's censure, but reserve thy judgement.
+ Costly thy habit as thy purse can buy,
+ But not express'd in fancy; rich, not gaudy;
+ For the apparel oft proclaims the man;
+ And they in France of the best rank and station
+ Are of a most select and generous chief in that.
+ Neither a borrower, nor a lender be;
+ For loan oft loses both itself and friend,
+ And borrowing dulls the edge of husbandry.
+ This above all: to thine own self be true,
+ And it must follow, as the night the day,
+ Thou canst not then be false to any man.
+ Farewell; my blessing season this in thee!
+
+-- William Shakespeare
+</textarea>
+<br>
+<button type="button" onclick="EncryptIN()">Parse for Encrypt</button>
+<button type="button" onclick="DecryptIN()">Parse for Decrypt</button>
+<p id="OUT1"</p>
+<h3>Result</h3>
+<p id="OUT2"></p>
+
+</body>
+</html>
